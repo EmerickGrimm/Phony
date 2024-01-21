@@ -10,8 +10,8 @@ Make sure you have Java installed on your system.
 
 ### Running the Application
 
-1. Compile the `Main.java` and `PhoneBook.java` files.
-2. Run the `Main` class to start the phone book application.
+1. Go to ["Releases"](https://github.com/EmerickGrimm/Phony/releases)
+2. Download latest version, for your system.
 
 ## Features
 
@@ -41,10 +41,6 @@ The application uses the AES encryption algorithm to encrypt and decrypt contact
 
 Contact information is stored in the file `contacts.enc`. The file is encrypted and decrypted using the user-provided secret key.
 
-**Note:** Ensure that the application is not run on a system where Java Runtime Environment (JRE) supports class file versions up to 55.0. If encountered, update the JRE to a version that supports class file versions 64.0.
-
-
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
@@ -52,3 +48,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Note
 
 This project is a study project and is not likely to be updated regularly.
+ 
+---
+Icon by a [Pexelpy](https://freeicons.io/profile/433683) on [freeicons.io](https://freeicons.io)

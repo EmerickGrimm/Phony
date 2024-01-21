@@ -1,15 +1,17 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.*;
 import java.util.*;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
+
 public class PhoneBook {
 
     private Map<String, String> contacts;
     private static final String ENCRYPTION_ALGORITHM = "AES";
     private boolean firstLoad = true;
-
 
     public PhoneBook() {
         contacts = new HashMap<>();
@@ -26,7 +28,7 @@ public class PhoneBook {
                 saveContacts(); // Save contacts after adding a new contact
             }
         } else {
-            System.out.println("Name or phone number is not valid..");
+            System.out.println("Name or phone number is not valid.");
         }
     }
 
@@ -79,17 +81,22 @@ public class PhoneBook {
         return name.matches(nameRegex);
     }
 
-
     public void saveContacts() {
         try {
             Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
             SecretKey secretKey = getSecretKey();
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
+            String fileName = "contacts.pcf";  // Update the file extension
+            Path filePath = Paths.get(fileName);
+
             try (ObjectOutputStream outputStream = new ObjectOutputStream(
-                    new CipherOutputStream(new FileOutputStream("contacts.enc"), cipher))) {
+                    new CipherOutputStream(Files.newOutputStream(filePath), cipher))) {
                 outputStream.writeObject(contacts);
             }
+
+            // Make the file hidden
+            Files.setAttribute(filePath, "dos:hidden", true, LinkOption.NOFOLLOW_LINKS);
 
         } catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
             e.printStackTrace();
@@ -97,7 +104,7 @@ public class PhoneBook {
     }
 
     private void loadContacts() {
-        if (new File("contacts.enc").exists()) {
+        if (new File("contacts.pcf").exists()) {
             try {
                 Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
 
@@ -112,7 +119,7 @@ public class PhoneBook {
                 cipher.init(Cipher.DECRYPT_MODE, secretKey);
 
                 try (ObjectInputStream inputStream = new ObjectInputStream(
-                        new CipherInputStream(new FileInputStream("contacts.enc"), cipher))) {
+                        new CipherInputStream(new FileInputStream("contacts.pcf"), cipher))) {
                     contacts = (Map<String, String>) inputStream.readObject();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -137,6 +144,5 @@ public class PhoneBook {
 
         return new SecretKeySpec(keyBytes, ENCRYPTION_ALGORITHM);
     }
-
 
 }
